@@ -198,8 +198,6 @@ const addProperty = function (property) {
   const queryParams = [];
   const queryKeys = [];
 
-  // const queryString = `INSERT INTO properties`
-
   for (const key in property) {
     queryKeys.push(key);
     queryParams.push(property[key]);
