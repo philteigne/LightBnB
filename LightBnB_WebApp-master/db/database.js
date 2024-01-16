@@ -210,8 +210,7 @@ const addProperty = function (property) {
   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
   RETURNING *`;
 
-  return pool
-    .query(queryString, queryParams)
+  return query(queryString, queryParams)
     .then(result => {
       return result.rows;
     })
