@@ -13,7 +13,7 @@ const pool = new Pool({
   database: 'lightbnb'
 });
 
-const query = async (text, params) => {
+const query = async(text, params) => {
   const start = Date.now();
   const res = await pool.query(text, params);
   const duration = Date.now() - start;
@@ -26,7 +26,7 @@ const query = async (text, params) => {
  * @param {String} email The email of the user.
  * @return {Promise<{}>} A promise to the user.
  */
-const getUserWithEmail = function (email) {
+const getUserWithEmail = function(email) {
 
   const queryString = `
   SELECT * FROM users
@@ -46,7 +46,7 @@ const getUserWithEmail = function (email) {
  * @param {string} id The id of the user.
  * @return {Promise<{}>} A promise to the user.
  */
-const getUserWithId = function (id) {
+const getUserWithId = function(id) {
 
   const queryString = `
   SELECT * FROM users
@@ -66,7 +66,7 @@ const getUserWithId = function (id) {
  * @param {{name: string, password: string, email: string}} user
  * @return {Promise<{}>} A promise to the user.
  */
-const addUser = function (user) {
+const addUser = function(user) {
 
   const queryString = `
   INSERT INTO users(name, email, password)
@@ -89,7 +89,7 @@ const addUser = function (user) {
  * @param {string} guest_id The id of the user.
  * @return {Promise<[{}]>} A promise to the reservations.
  */
-const getAllReservations = function (guest_id, limit = 10) {
+const getAllReservations = function(guest_id, limit = 10) {
 
   const queryString = `
   SELECT properties.*, reservations.id, reservations.start_date, avg(property_reviews.rating) as average_rating
@@ -162,7 +162,6 @@ const getAllProperties = function(options, limit = 10) {
     queryString += `${qualifier} properties.cost_per_night <= $${queryParams.length} `;
   }
 
-  
   queryString += `
   GROUP BY properties.id `;
   
@@ -176,8 +175,7 @@ const getAllProperties = function(options, limit = 10) {
   ORDER BY cost_per_night
   LIMIT $${queryParams.length};
   `;
-
-
+  
   return query(queryString, queryParams)
     .then(result => {
       return result.rows;
@@ -193,7 +191,7 @@ const getAllProperties = function(options, limit = 10) {
  * @param {{}} property An object containing all of the property details.
  * @return {Promise<{}>} A promise to the property.
  */
-const addProperty = function (property) {
+const addProperty = function(property) {
 
   const queryParams = [];
   const queryKeys = [];
