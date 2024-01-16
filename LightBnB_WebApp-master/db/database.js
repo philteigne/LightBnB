@@ -47,10 +47,12 @@ const getUserWithEmail = function (email) {
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithId = function (id) {
-  return pool
-    .query(
-      `SELECT * FROM users
-      WHERE id = $1`, [id])
+
+  const queryString = `
+  SELECT * FROM users
+  WHERE id = $1`;
+
+  return query(queryString, [id])
     .then(result => {
       return result.rows[0] || null;
     })
@@ -65,11 +67,13 @@ const getUserWithId = function (id) {
  * @return {Promise<{}>} A promise to the user.
  */
 const addUser = function (user) {
-  return pool
-    .query(
-      `INSERT INTO users(name, email, password)
-      VALUES ($1, $2, $3)
-      RETURNING *`, [user.name, user.email, user.password])
+
+  const queryString = `
+  INSERT INTO users(name, email, password)
+  VALUES ($1, $2, $3)
+  RETURNING *`;
+
+  return query(queryString, [user.name, user.email, user.password])
     .then(result => {
       return result.rows[0];
     })
