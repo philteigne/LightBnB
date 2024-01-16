@@ -13,6 +13,13 @@ const pool = new Pool({
   database: 'lightbnb'
 });
 
+const query = async (text, params) => {
+  const start = Date.now();
+  const res = await pool.query(text, params);
+  const duration = Date.now() - start;
+  console.log('executed query', { text, duration, rows: res.rowCount });
+  return res;
+};
 
 /**
  * Get a single user from the database given their email.
@@ -21,16 +28,16 @@ const pool = new Pool({
  */
 const getUserWithEmail = function (email) {
 
-  return pool
-    .query(
-      `SELECT * FROM users
-      WHERE email = $1`, [email])
+  const queryString = `
+  SELECT * FROM users
+  WHERE email = $1`;
+
+  return query(queryString, [email])
     .then(result => {
-      console.log(result.rows[0] || null);
       return result.rows[0] || null;
     })
     .catch((err) => {
-      console.log(err.message);
+      return err.message;
     });
 };
 
@@ -45,11 +52,9 @@ const getUserWithId = function (id) {
       `SELECT * FROM users
       WHERE id = $1`, [id])
     .then(result => {
-      console.log(result.rows || null);
       return result.rows[0] || null;
     })
     .catch((err) => {
-      console.log(err.message);
       return err.message;
     });
 };
@@ -66,11 +71,9 @@ const addUser = function (user) {
       VALUES ($1, $2, $3)
       RETURNING *`, [user.name, user.email, user.password])
     .then(result => {
-      console.log(result.rows[0]);
       return result.rows[0];
     })
     .catch((err) => {
-      console.log(err.message);
       return err.message;
     });
 };
@@ -94,11 +97,9 @@ const getAllReservations = function (guest_id, limit = 10) {
       ORDER BY reservations.start_date
       LIMIT $2;`, [guest_id, limit])
     .then(result => {
-      console.log(result.rows);
       return result.rows;
     })
     .catch((err) => {
-      console.log(err);
       return err.message;
     });
   // return getAllProperties(null, 2);
@@ -171,16 +172,12 @@ const getAllProperties = function(options, limit = 10) {
   LIMIT $${queryParams.length};
   `;
 
-  console.log(queryString, queryParams);
-
   return pool
     .query(queryString, queryParams)
     .then(result => {
-      console.log(result.rows);
       return result.rows;
     })
     .catch((err) => {
-      console.log(err.message);
       return err.message;
     });
 };
@@ -211,11 +208,9 @@ const addProperty = function (property) {
   return pool
     .query(queryString, queryParams)
     .then(result => {
-      console.log(result.rows);
       return result.rows;
     })
     .catch((err) => {
-      console.log(err);
       return err.message;
     });
 };
